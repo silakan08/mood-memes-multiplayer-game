@@ -1,0 +1,1270 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Memes - Multiplayer 🎭</title>
+    <style>/* styles.css */
+:root {
+    --bg-color: #fff0f5;
+    --text-color: #590d22;
+    --primary-color: #ff4d6d;
+    --secondary-color: #c9184a;
+    --accent-color: #ff8fa3;
+    --bubble-bg: #ffffff;
+    --my-bubble-bg: #ffc2d1;
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --border-color: #ffb3c6;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    height: 100vh;
+    height: 100dvh;
+    /* iOS cihazlarda Safari adres çubuğu scroll sorununu çözer */
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+}
+
+#app {
+    width: 100%;
+    max-width: 600px;
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: linear-gradient(135deg, #fff0f5 0%, #ffc2d1 50%, #ffb3c6 100%);
+    box-shadow: 0 0 40px rgba(255, 77, 109, 0.2), 0 0 20px rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+}
+
+.glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.screen {
+    display: none;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+}
+
+.screen.active {
+    display: flex;
+}
+
+.setup-container {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.title {
+    font-size: 2.2rem;
+    color: #590d22;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    font-weight: 700;
+}
+
+.subtitle {
+    color: #c9184a;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.65);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    width: 100%;
+    margin-bottom: 1rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    backdrop-filter: blur(8px);
+}
+
+.card h2 {
+    margin-bottom: 0.5rem;
+    color: #590d22;
+    font-size: 1.3rem;
+}
+
+.help-text {
+    font-size: 0.9rem;
+    color: #800f2f;
+    margin-bottom: 1rem;
+}
+
+/* Image Uploads and Delete */
+.file-upload-btn {
+    display: inline-block;
+    background: transparent;
+    border: 2px dashed var(--primary-color);
+    color: var(--primary-color);
+    padding: 0.85rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    width: 100%;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.file-upload-btn:hover {
+    background: rgba(255, 77, 109, 0.1);
+}
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+    gap: 8px;
+    max-height: 150px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+}
+
+.image-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.image-wrapper img {
+    width: 100%;
+    height: 65px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+
+.delete-btn {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #e63946;
+    color: white;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.divider {
+    height: 1px;
+    background: var(--border-color);
+    margin: 1.5rem 0;
+    text-align: center;
+    line-height: 0;
+    color: #c9184a;
+}
+
+.divider span {
+    background: #140c26;
+    padding: 0 10px;
+    border-radius: 4px;
+}
+
+input[type="text"],
+input[type="number"] {
+    flex: 1;
+    padding: 0.85rem;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 8px;
+    outline: none;
+    font-size: 1rem;
+    width: 100%;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+input[type="text"]:focus {
+    border-color: var(--primary-color);
+}
+
+.btn,
+.primary-btn,
+.secondary-btn {
+    padding: 0.85rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.2s;
+    width: 100%;
+}
+
+.btn {
+    background: #ffb3c6;
+    color: #590d22;
+}
+
+.btn:hover {
+    background: #ff8fa3;
+}
+
+.primary-btn {
+    background: linear-gradient(90deg, #ff2a5f, #ff7a00);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(255, 42, 95, 0.4);
+}
+
+.primary-btn:hover {
+    background: linear-gradient(90deg, #fa1e52, #e66d00);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 42, 95, 0.6);
+}
+
+.secondary-btn {
+    background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 4px 15px rgba(0, 210, 255, 0.3);
+}
+
+.secondary-btn:hover {
+    background: linear-gradient(90deg, #00bce6, #326bc4);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 210, 255, 0.5);
+}
+
+.hidden {
+    display: none !important;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.mt-4 {
+    margin-top: 1rem;
+}
+
+.mt-3 {
+    margin-top: 0.75rem;
+}
+
+.mt-2 {
+    margin-top: 0.5rem;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.player-list {
+    list-style: none;
+    margin-bottom: 1rem;
+}
+
+.player-list li {
+    background: rgba(255, 255, 255, 0.7);
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    color: #590d22;
+    font-weight: bold;
+}
+
+.handover-icon {
+    font-size: 5rem;
+    margin-bottom: 2rem;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* Game Screen */
+.game-header {
+    padding: 0.6rem;
+    text-align: center;
+    z-index: 10;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.situation-container {
+    background: rgba(255, 255, 255, 0.5);
+    border: 2px solid rgba(255, 77, 109, 0.3);
+    border-radius: 12px;
+    padding: 0.8rem;
+    box-shadow: 0 0 15px rgba(255, 77, 109, 0.15);
+}
+
+.label {
+    font-size: 0.8rem;
+    color: var(--accent-color);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+#current-situation {
+    font-size: 1.3rem;
+    color: #590d22;
+    margin-top: 0.8rem;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.chat-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.4) 0%, rgba(255, 194, 209, 0.3) 100%);
+    position: relative;
+}
+
+.chat-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-bottom: 1.5rem;
+}
+
+.chat-bubble {
+    max-width: 85%;
+    align-self: flex-start;
+    display: flex;
+    flex-direction: column;
+    animation: popIn 0.3s forwards;
+}
+
+.chat-bubble.mine {
+    align-self: flex-end;
+}
+
+.chat-sender {
+    font-size: 0.9rem;
+    color: var(--accent-color);
+    margin-bottom: 0.3rem;
+    font-weight: 700;
+    text-shadow: 1px 1px 2px #000;
+}
+
+.chat-bubble.mine .chat-sender {
+    text-align: right;
+}
+
+.chat-content {
+    background: var(--bubble-bg);
+    padding: 0.5rem;
+    border-radius: 12px;
+    border: 2px solid var(--border-color);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+}
+
+.chat-bubble.mine .chat-content {
+    background: var(--my-bubble-bg);
+    border-color: #ff4d6d;
+}
+
+.chat-content img {
+    max-width: 155px;
+    max-height: 155px;
+    object-fit: contain;
+    border-radius: 8px;
+    display: block;
+    border: 1px solid #ffb3c6;
+}
+
+.controls-container {
+    border-top: 2px solid var(--border-color);
+    padding: 0.8rem;
+    z-index: 10;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.cards-carousel {
+    display: flex;
+    overflow-x: auto;
+    gap: 0.85rem;
+    padding-bottom: 0.8rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) #1f060a;
+    justify-content: center;
+}
+
+.cards-carousel::-webkit-scrollbar {
+    height: 8px;
+}
+
+.cards-carousel::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border-radius: 4px;
+}
+
+.cards-carousel::-webkit-scrollbar-track {
+    background: rgba(255, 179, 198, 0.3);
+}
+
+.card-option {
+    flex: 0 0 85px;
+    width: 85px;
+    height: 110px;
+    border-radius: 10px;
+    border: 3px solid #ffb3c6;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    background: #fff0f5;
+    position: relative;
+}
+
+.card-option img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.85;
+}
+
+.card-option:hover {
+    transform: translateY(-8px);
+    border-color: var(--accent-color);
+    box-shadow: 0 8px 15px rgba(230, 57, 70, 0.4);
+}
+
+.card-option:hover img {
+    opacity: 1;
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0.8) translateY(20px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}</style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- WebRTC Multiplayer Kütüphanesi -->
+    <script src="https://unpkg.com/peerjs@1.5.1/dist/peerjs.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- ROL SEÇİMİ (Ana Menü) -->
+        <div id="role-screen" class="screen active">
+            <div class="setup-container">
+                <h1 class="title">Mood Oyunu 🎭</h1>
+                <p class="subtitle">Arkadaşlarınla kendi cihazlarından bağlan ve oynamaya başla!</p>
+
+                <div class="card glass text-center">
+                    <button id="btn-create-room" class="primary-btn w-full mb-3">Oda Kur (Yönetici)</button>
+                    <div class="divider">veya</div>
+                    <button id="btn-show-join" class="secondary-btn w-full">Odaya Katıl (Oyuncu)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ODAYA KATIL (Oyuncu İçin) -->
+        <div id="join-screen" class="screen">
+            <div class="setup-container">
+                <h1 class="title">Odaya Katıl</h1>
+                <p class="subtitle">Arkadaşının verdiği Oda Kodunu gir.</p>
+                <div class="card glass">
+                    <div class="player-input-group flex-col">
+                        <input type="text" id="join-nickname" placeholder="Nick'ini Gir (Örn: Kral123)">
+                        <input type="text" id="join-room-id" placeholder="Oda Kodunu Gir (Örn: AB12C)"
+                            style="text-transform: uppercase;">
+                        <button id="btn-join-room" class="primary-btn mt-4">Odama Bağlan 🚀</button>
+                    </div>
+                </div>
+                <button id="btn-back-role" class="btn mt-4">Geri Dön</button>
+            </div>
+        </div>
+
+        <!-- LOBİ (Oyuncu İçin Bekleme) -->
+        <div id="waiting-screen" class="screen">
+            <div class="setup-container">
+                <h1 class="title text-accent">Lobi</h1>
+                <p class="subtitle">Odaya başarıyla bağlandın!</p>
+                <div class="card glass text-center">
+                    <div class="handover-icon">⏳</div>
+                    <h2>Kurucunun oyunu başlatması bekleniyor...</h2>
+                    <p class="help-text mt-3">Oyun başladığında elindeki fotoğraflar kendi ekranında belirecek.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ODA KURUCUSU (Kurucu Lobi Ayarları) -->
+        <div id="host-lobby-screen" class="screen">
+            <div class="setup-container">
+                <h1 class="title">Oda Kuruldu 👑</h1>
+                <p class="subtitle">Bu kodu giren herkes odaya katılabilir:</p>
+
+                <div class="card glass text-center highlight-box" style="margin-bottom: 2rem;">
+                    <h2 class="label" style="font-size: 1rem; color: #ffebf0;">ODA KODUN:</h2>
+                    <h1 id="display-room-id" class="highlight-large select-all"
+                        style="font-size: 3rem; margin: 0.5rem 0;">...</h1>
+                </div>
+
+                <div class="card glass">
+                    <h2>� Kendi Nick'in (Kurucu)</h2>
+                    <input type="text" id="host-nickname" placeholder="Nick'in (Örn: Patron)" value="Kurucu"
+                        style="margin-top: 0.5rem; width: 100%;">
+                </div>
+
+                <div class="card glass">
+                    <h2>�📷 Fotoğraf Havuzu Ekle/Çıkar</h2>
+                    <p class="help-text">Bu fotoğraflar oyunda dağıtılacak. Sonradan da ekleme yapabilirsin.</p>
+                    <label class="file-upload-btn">
+                        <span>➕ Cihazdan Fotoğraf Seç</span>
+                        <input type="file" id="image-upload" multiple accept="image/*" style="display: none;">
+                    </label>
+                    <div id="image-preview" class="image-grid"></div>
+                </div>
+
+                <div class="card glass">
+                    <h2>👥 Odaya Bağlananlar (<span id="player-count">0</span>)</h2>
+                    <ul id="player-list" class="player-list">
+                        <li class="empty-state" style="color:#7a3e4a; font-style: italic;">Henüz kimse katılmadı...</li>
+                    </ul>
+                </div>
+
+                <button id="start-game-btn" class="primary-btn mt-4 w-full">Herkes Geldiyse Başlat �</button>
+            </div>
+        </div>
+
+        <!-- OYUN (Senaryo ve Chat Ekranı) -->
+        <div id="game-screen" class="screen">
+            <header class="game-header glass">
+                <div class="situation-container text-center">
+                    <span class="label">ŞU ANKİ DURUM / SENARYO</span>
+                    <h2 id="current-situation">...</h2>
+                </div>
+            </header>
+
+            <!-- Ortak Chat Alanı -->
+            <div class="chat-container">
+                <div id="chat-messages" class="chat-messages">
+                    <!-- Chat balonları buraya dolacak -->
+                </div>
+            </div>
+
+            <!-- Kontroller (Yönetici ve Oyuncular İçin Ayrı) -->
+            <div class="controls-container glass">
+
+                <!-- Kart Seçme / Oynama Paneli (Ortak, Kurucu da görür) -->
+                <div id="player-actions" class="hidden">
+                    <div class="turn-header" style="margin-bottom: 0.2rem;">
+                        <div class="current-player-info text-center w-full" style="font-size: 0.85rem; font-weight: bold; color: var(--accent-color);">
+                            Elindeki Kartlar (1 tane seç!)
+                        </div>
+                    </div>
+                    <div class="hand-container">
+                        <div id="player-hand" class="cards-carousel">
+                            <!-- Fotoğraflar buraya eklenecek -->
+                        </div>
+                    </div>
+                    <div id="played-state" class="hidden text-center" style="padding: 0.3rem;">
+                        <h3 style="color:var(--accent-color); font-size: 0.95rem; margin-bottom: 0.1rem;">Kartın Onaylandı! ✅</h3>
+                        <p class="help-text" style="font-size: 0.75rem; margin: 0;">Ortaya atıldı. Diğer oyuncuları bekle.</p>
+                    </div>
+                </div>
+
+                <!-- Yönetici Paneli (Sadece Kurucuya Görünür) -->
+                <div id="host-actions" class="hidden"
+                    style="margin-top: 0.5rem; border-top: 1px solid var(--border-color); padding-top: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                    <button id="next-round-btn" class="secondary-btn w-full" style="padding: 0.6rem;">Sonraki Duruma Geç ➡️</button>
+                    <button id="end-game-btn" class="btn w-full" style="background:#e63946; color:#fff; padding: 0.6rem;">Oyunu Bitir 🛑</button>
+                    <p class="help-text text-center" style="font-size: 0.75rem; margin: 0;">Herkes fotoğraf attıktan sonra basabilirsin.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>// script.js
+const dom = {
+    // Screens
+    roleScreen: document.getElementById('role-screen'),
+    joinScreen: document.getElementById('join-screen'),
+    waitingScreen: document.getElementById('waiting-screen'),
+    hostLobbyScreen: document.getElementById('host-lobby-screen'),
+    gameScreen: document.getElementById('game-screen'),
+
+    // Buttons
+    btnCreateRoom: document.getElementById('btn-create-room'),
+    btnShowJoin: document.getElementById('btn-show-join'),
+    btnJoinRoom: document.getElementById('btn-join-room'),
+    btnBackRole: document.getElementById('btn-back-role'),
+    startGameBtn: document.getElementById('start-game-btn'),
+    nextRoundBtn: document.getElementById('next-round-btn'),
+    endGameBtn: document.getElementById('end-game-btn'),
+
+    // Inputs & Areas
+    joinNickname: document.getElementById('join-nickname'),
+    joinRoomId: document.getElementById('join-room-id'),
+    displayRoomId: document.getElementById('display-room-id'),
+    hostNickname: document.getElementById('host-nickname'),
+    imageUpload: document.getElementById('image-upload'),
+    imagePreview: document.getElementById('image-preview'),
+    playerList: document.getElementById('player-list'),
+    playerCount: document.getElementById('player-count'),
+
+    // Game Elements
+    currentSituation: document.getElementById('current-situation'),
+    chatMessages: document.getElementById('chat-messages'),
+    hostActions: document.getElementById('host-actions'),
+    playerActions: document.getElementById('player-actions'),
+    playerHand: document.getElementById('player-hand'),
+    playedState: document.getElementById('played-state')
+};
+
+// --- DATA ---
+const originalSentences = [
+    "Sınav haftası yaklaşırken ben ve içimdeki yaşama sevinci",
+    "Otobüste yanlışlıkla yanımdakinin omzunda uyuyakalmışımdır",
+    "Kuaförden 'çok güzel oldu' deyip çıkıp eve gelince aynadaki yansımam",
+    "Eski sevgilim benden 2 gün sonra başkasını bulduğunda ben",
+    "Annem odamı tamamen topladığını zannedip içeri girdiğinde",
+    "Gece saat 3'te mutfakta su içerken aynada kendi yansımamı görmüşümdür",
+    "Market sırasında önümdeki teyze 10 kuruşları sayıyordur ve benim acelem vardır",
+    "Arkadaşım 'hesabı ben öderim' dediğinde yüz ifadem",
+    "Hocanın sınıfta yaptığı iğrenç espriye zorla gülüyorumdur",
+    "En yakın arkadaşım yürürken pat diye yere düşmüştür",
+    "Mesajımı görüp 3 saat sonra cevap verdiğinde ben",
+    "Telefonumu sessize alıp masaya koyduğum o gergin an",
+    "Kuaföre sadece uçlarından al deyip kel kaldığımı fark ettiğim an",
+    "Kargocu geldiğinde pijamayla ve dağınık saçla kapıyı açmışımdır",
+    "Misafirlikte yemeği beğenmeyip annemle göz göze gelince",
+    "Otobüste bana yer versinler diye yaşlı taklidi yaparken şoförle göz göze geldiğimde",
+    "Fotoğraf çekilirken 1 saniye bekle deyip o sırada hapşırdığımda çıkan kare",
+    "Wi-Fi şifresini 5. kez yanlış girdiğimi fark edince ben",
+    "Toplu taşımada müzik dinlerken kulaklığın tam takılmadığını anladığım an",
+    "Grupta anlattığım espriye kimse gülmeyince araya giren o ölüm sessizliği",
+    "Arkadaşım bana dedikodu anlatmaya başlarkenki heyecan şelalem",
+    "Evde yalnızken duyduğum o tuhaf tıkırtı sonrası hayatta kalma moduna geçişim",
+    "Yeni tanıştığım birinin adını 5 saniye sonra unuttuğumda",
+    "Misafirliğe gidip 'aç değiliz ya' dedikten sonra mide gurultumun odayı yankılatması",
+    "Sevmediğim bir akrabam 'Büyümüşsün' deyip yanaklarımı sıkarken ben",
+    "Yolda müzik dinleyip havalı yürüdüğümü sanırken aynadaki gerçek yürüyüşüm",
+    "Telefonun şarjı %1'deyken priz arayışım",
+    "Annem eve gelince yapmadığım bulaşıkları gördüğünde atacağı bakışın provası",
+    "Tüm gruba sınav notumu söylemeden hemen önceki haklı gururum",
+    "Sabah alarm çalmadan 2 dakika önce uyandığımı fark edince",
+    "Biri bana çok uzun bir hikaye anlatırken kafa sallamak dışında verecek tepkimi kaybetmem",
+    "İnternet siparişim gelince kargo paketini yırtarak açarken hissettiğim vahşilik",
+    "Buzdolabını açıp 10 saniye boşluğa baktıktan sonra hiçbir şey almadan kapatışım",
+    "Hoca 'Herkes bir grup kursun' dediğinde dışarıda kalan ben",
+    "Televizyonda kendi sesimi ilk kez duyduğum an yaşadığım şok",
+    "Derste hoca bana soru sorunca beynimin aniden format atması",
+    "Arkadaşlarımla buluşmaya 1 saat geç kalıp 'Yoldayım' mesajı atarken",
+    "Rejimdeyken gece yarısı gizlice dolaptan çikolata aşırırken yakalanışım",
+    "Düğünde oynayanları izlerken zorla oyuna kaldırıldığım o an",
+    "Arkadaşımın anlattığı komik olmayan hikayeye sahte kahkaha atma çabam",
+    "Fotoğrafta iyi çıktığımı sanıp zoom yapınca karşılaştığım o acı gerçek",
+    "İlk buluşmada yanlışlıkla rezil bir şey söyleyince beynimin bana bakışı",
+    "Sosyal medyada eski fotoğraflarıma denk gelip utançtan erimem",
+    "Tuvalette telefonun şarjı bitince şampuan arkasını okumaya başlama evrem",
+    "Babam teknolojik bir aleti nasıl kullanacağını bana 5. kez sorarken",
+    "Kuaför saçımı keserken gözümün önünde giden o devasa tutamı gördüğümde",
+    "Girdiğim ortamda kimseyi tanımadığımı fark edip telefona sığınışım",
+    "Yere düşen yemeği 3 saniye kuralı diyerek yerden alıp yemem",
+    "Alarmı erteleye erteleye artık işe/okula geç kalmayı kabullendiğim o an",
+    "Spor salonuna yazılıp sadece 1 gün gittikten sonra hesabıma bakan ben",
+    "Arkadaşım 'Kanka sen halledersin' deyip beni ateşe attığında",
+    "Annemin misafir yanında beni övmesi vs benim iç dünyam",
+    "Dolmuştan inerken 'Müsait bi yerde' diyememe paniğim",
+    "Buzdolabında kendime sakladığım yiyeceği başkasının yediğini gördüğümde",
+    "Yanlış kişiye mesaj attığımı gönderdikten 1 saniye sonra fark edişim",
+    "Misafir çocuğu odama girip eşyalarımı karıştırmaya başladığında",
+    "Kendi esprilerime herkesten çok güldüğümü fark etmem",
+    "Kışın sıcacık yataktan kalkıp o buz gibi zemine bastığım an",
+    "Restoranda garsona seslenmeye çalışıp sesimin çıkmaması",
+    "Arkadaşım dedikodu anlatırken 'Asla kimseye söyleme' dediğinde içimdeki yayıncı",
+    "Diyete başlayıp ertesi gün lahmacun sipariş eden iradem",
+    "Sevdiğim şarkı çalınca bir anda gaza gelip klip çekiyormuş gibi yapmam",
+    "Aynanın karşısında konser veriyorken annemin odaya dalması",
+    "Yazışırken random ('asdasd') gülüp gerçekte dümdüz ekrana bakışım",
+    "Sınavda bilmediğim soru gelince kalemin ucuyla tavanı izlemem",
+    "Banyodan çıkıp aynadaki buğuyu silince gördüğüm o yorgun silüet",
+    "Flörtüm mesajıma 1 dakika içinde dönünce hissettiğim o inanılmaz zafer",
+    "Araba kullanırken yan koltuktaki kişinin frene basıyormuş gibi yapması",
+    "Mekanda hesap çok gelince arkadaşlarla birbirimize attığımız o bakış",
+    "Kedim/köpeğim bana o masum gözlerle bakıp mama dilendiğinde",
+    "Karanlıkta tuvalete kalkıp hayalet görme korkusuyla koşarak yatağa dönüşüm",
+    "Sınıfta hoca 'Evet, bu soruyu kim çözecek' deyince herkesin masaya gömülmesi",
+    "Biri bana adres tarif ederken 5 saniye sonra koptuğumu çaktırmama çabam",
+    "Film izlerken ana karakter saçma bir karar aldığında ekrana bağırmam",
+    "Telefon ekranımı kırıp 'Böyle de çalışıyor' diyerek kendimi avutmam",
+    "Misafirlikte tuvaleti tıkayıp içeride çözüm üretirken geçirdiğim 10 dakika",
+    "Kendi kedim beni takmazken sokaktaki kedinin peşime takılması",
+    "Duşta aklıma gelen mükemmel cevapları kavga anında verememem",
+    "Yeni aldığım beyaz ayakkabıya ilk günde basılması",
+    "Kuaför 'Nasıl olmuş' deyince ağlayacak gibi olup 'Harika' demem",
+    "Grupta 'Kimse gelmiyorsa ben de gelmiyorum' diyen o kişi",
+    "Bilgisayar donduğunda farenin tuşlarına çılgınca basmam",
+    "Asansörde tanımadığım biriyle o sessiz 30 saniye çekilmesi",
+    "Yemek yaparken tarifin 'Göz kararı' dediği o anki çaresizliğim",
+    "Arkadaşım 'Bende para var' deyip hesabı ödediğinde gözümde dönüştüğü kahraman",
+    "Yeni uyandığımda kimseye tahammülümün olmadığı o ilk 15 dakika",
+    "Dizinin en heyecanlı yerinde giren 10 dakikalık reklama isyanım",
+    "Annem 'Sana bir şey soracağım, kızmayacağım' dediğinde kurduğum senaryolar",
+    "Sokakta yürürken yalnız olmadığımı sanıp kendi kendime konuştuğumda birinin bana bakması",
+    "Ev temizlerken bulduğum eski eşyalara dalıp 2 saat geçmişe gitmem",
+    "Market poşetlerini tek seferde taşımak için parmaklarımı feda edişim",
+    "Yazın sıcakta klimanın tam altına geçip o donma hissini yaşamam",
+    "Bir diziye başlayıp 3 günde 5 sezon bitirince hissettiğim boşluk",
+    "Gözlük takan birinin gözlüğünü çıkarınca yüzündeki o tuhaf değişim",
+    "Annemin misafirliğe giderken 'Biz yemeyiz' imajı çizmem için verdiği uyarılar",
+    "Yeni tanıştığım kişinin elini sıkarken adımın ne olduğunu unutmam",
+    "Sınav biter bitmez cevapları kontrol edip aslında ne kadar batırdığımı anladığım an",
+    "Sınıfta 'Sadece bilenler parmak kaldırsın' dendiğinde masanın altına gizlenişim",
+    "İnternetim gitmeden hemen önce mesajı yollayabildiğim o mutlu saniye",
+    "Oyun oynarken kaybedeceğimi anladığımda 'Kolu bozuk bunun' demem",
+    "Kafede yanlışlıkla başkasının bardağından su içtiğimi anladığımda",
+    "Uzun uzun yazdığım tartışma mesajını 'tamam' diyerek silen iradem",
+    "İnstagramda stalk yaparken yanlışlıkla 2 yıl önceki fotoğrafı beğenişim",
+    "Sabah dolmuşa e-nabız okutmak gibi dalgınlıklar yaşadığım o an",
+    "En sevdiğim tişörtümün lekeli olduğunu 8 saatlik dışarı gezmesinden sonra fark etmem",
+    "Mutfakta tabak kırılınca annemin odadan duyulan o derin nefes alışı",
+    "Misafir varken içeri en pijamalı halimle daldığım saniye",
+    "Arkadaşım ağlarken onu nasıl teselli edeceğimi bilemeyip omzuna pat pat yapışım",
+    "Fotoğraf çekileceğiz diye göbeğimi 1 dakika boyunca içime çekmem",
+    "Uyumadan önce aklıma gelen ve 5 yıl önce yaşanan o utanç verici olay"
+];
+let sentences = [];
+let currentSentenceIndex = 0;
+let CARDS_PER_PLAYER = 5;
+
+// --- PEER JS MULTIPLAYER ---
+let peer = null;
+let isHost = false;
+let myName = "Yönetici";
+
+// HOST STATE
+let connections = []; // [{peerJsId, conn, name}]
+let compressedImages = []; // [{id, dataUrl}]
+
+const defaultMoodPhotos = [
+    "moodfotolar/1.jpeg",
+    "moodfotolar/2.jpeg",
+    "moodfotolar/3.jpeg",
+    "moodfotolar/4.jpeg",
+    "moodfotolar/5.jpeg",
+    "moodfotolar/6.jpeg",
+    "moodfotolar/7.jpeg",
+    "moodfotolar/8.jpeg",
+    "moodfotolar/9.jpeg",
+    "moodfotolar/10.jpeg",
+    "moodfotolar/11.jpeg",
+    "moodfotolar/12.jpeg",
+    "moodfotolar/13.jpeg",
+    "moodfotolar/14.jpeg",
+    "moodfotolar/15.jpeg",
+    "moodfotolar/16.jpeg",
+    "moodfotolar/17.jpeg",
+    "moodfotolar/18.jpeg",
+    "moodfotolar/19.jpeg",
+    "moodfotolar/20.jpeg",
+    "moodfotolar/21.jpeg",
+    "moodfotolar/22.jpeg",
+    "moodfotolar/23.jpeg",
+    "moodfotolar/24.jpeg",
+    "moodfotolar/25.jpeg",
+    "moodfotolar/26.jpeg",
+    "moodfotolar/27.jpeg",
+    "moodfotolar/28.jpeg",
+    "moodfotolar/29.jpeg",
+    "moodfotolar/30.jpeg",
+    "moodfotolar/31.jpeg",
+    "moodfotolar/32.jpeg",
+    "moodfotolar/33.jpeg",
+    "moodfotolar/34.jpeg",
+    "moodfotolar/35.jpeg",
+    "moodfotolar/36.jpeg",
+    "moodfotolar/37.jpeg",
+    "moodfotolar/38.jpeg",
+    "moodfotolar/39.jpeg",
+    "moodfotolar/40.jpeg",
+    "moodfotolar/41.jpeg",
+    "moodfotolar/42.jpeg",
+    "moodfotolar/43.jpeg",
+    "moodfotolar/44.jpeg",
+    "moodfotolar/45.jpeg",
+    "moodfotolar/46.jpeg",
+    "moodfotolar/47.jpeg",
+    "moodfotolar/48.jpeg",
+    "moodfotolar/49.jpeg",
+    "moodfotolar/50.jpeg",
+    "moodfotolar/51.jpeg",
+    "moodfotolar/52.jpeg",
+    "moodfotolar/53.jpeg",
+    "moodfotolar/54.jpeg",
+    "moodfotolar/55.jpeg",
+    "moodfotolar/56.jpeg",
+    "moodfotolar/57.jpeg",
+    "moodfotolar/58.jpeg",
+    "moodfotolar/59.jpeg",
+    "moodfotolar/60.jpeg",
+    "moodfotolar/61.jpeg",
+    "moodfotolar/62.jpeg",
+    "moodfotolar/63.jpeg",
+    "moodfotolar/64.jpeg",
+    "moodfotolar/65.jpeg",
+    "moodfotolar/66.jpeg",
+    "moodfotolar/67.jpeg",
+    "moodfotolar/68.jpeg",
+    "moodfotolar/69.jpeg",
+    "moodfotolar/70.jpeg",
+    "moodfotolar/71.jpeg",
+    "moodfotolar/72.jpeg",
+    "moodfotolar/73.jpeg",
+    "moodfotolar/74.jpeg",
+    "moodfotolar/75.jpeg",
+    "moodfotolar/76.jpeg",
+    "moodfotolar/77.jpeg",
+    "moodfotolar/78.jpeg",
+    "moodfotolar/79.jpeg",
+    "moodfotolar/80.jpeg",
+    "moodfotolar/81.jpeg",
+    "moodfotolar/82.jpeg",
+    "moodfotolar/83.jpeg",
+    "moodfotolar/84.jpeg",
+    "moodfotolar/85.jpeg",
+    "moodfotolar/86.jpeg",
+    "moodfotolar/87.jpeg",
+    "moodfotolar/88.jpeg",
+    "moodfotolar/89.jpeg",
+    "moodfotolar/90.jpeg",
+    "moodfotolar/91.jpeg",
+    "moodfotolar/92.jpeg",
+    "moodfotolar/93.jpeg",
+    "moodfotolar/94.jpeg",
+    "moodfotolar/95.jpeg",
+    "moodfotolar/96.jpeg",
+    "moodfotolar/97.jpeg",
+    "moodfotolar/98.jpeg",
+    "moodfotolar/99.jpeg"
+];
+
+defaultMoodPhotos.forEach((imgName, idx) => {
+    compressedImages.push({
+        id: 'default_img_' + idx,
+        dataUrl: imgName
+    });
+});
+
+let playersHand = {};
+let playerDecks = {}; // map: peerJsId => [dataUrl] // map: peerJsId => [dataUrl]
+
+// PLAYER STATE
+let hostConn = null;
+
+// --- NAVIGATION ---
+function showScreen(screenEl) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    screenEl.classList.add('active');
+}
+
+dom.btnShowJoin.onclick = () => showScreen(dom.joinScreen);
+dom.btnBackRole.onclick = () => showScreen(dom.roleScreen);
+
+function generateShortID() {
+    return Math.random().toString(36).substr(2, 5).toUpperCase();
+}
+
+// --- HOST LOGIC ---
+dom.btnCreateRoom.onclick = () => {
+    isHost = true;
+    showScreen(dom.hostLobbyScreen);
+
+    const roomId = generateShortID();
+    dom.displayRoomId.innerText = "Yükleniyor...";
+
+    peer = new Peer(roomId);
+
+    peer.on('open', (id) => {
+        dom.displayRoomId.innerText = id;
+    });
+
+    peer.on('connection', (conn) => {
+        conn.on('data', (data) => handleHostData(conn, data));
+        conn.on('close', () => removeConnectedPlayer(conn.peer));
+    });
+};
+
+function handleHostData(conn, data) {
+    if (data.type === 'join') {
+        if (!connections.find(c => c.peer === conn.peer)) {
+            connections.push({ peer: conn.peer, conn: conn, name: data.name });
+        }
+        renderPlayerList();
+    } else if (data.type === 'play_card') {
+        const pHand = playersHand[conn.peer];
+        if (pHand) {
+            const index = pHand.indexOf(data.cardUrl);
+            if (index > -1) pHand.splice(index, 1);
+        }
+
+        const bubbleData = {
+            type: 'chat_msg',
+            playerName: connections.find(c => c.peer === conn.peer)?.name || 'Oyuncu',
+            imgUrl: data.cardUrl,
+            peerId: conn.peer
+        };
+        // Show for host
+        renderBubble(bubbleData);
+        // Broadcast to all
+        broadcast(bubbleData);
+    }
+}
+
+function broadcast(data) {
+    connections.forEach(c => c.conn.send(data));
+}
+
+function renderPlayerList() {
+    dom.playerList.innerHTML = '';
+    dom.playerCount.innerText = connections.length;
+    if (connections.length === 0) {
+        dom.playerList.innerHTML = '<li class="empty-state">Henüz kimse katılmadı...</li>';
+        return;
+    }
+    connections.forEach(c => {
+        const li = document.createElement('li');
+        li.innerText = `👤 ${c.name}`;
+        dom.playerList.appendChild(li);
+    });
+}
+
+function removeConnectedPlayer(peerId) {
+    connections = connections.filter(c => c.peer !== peerId);
+    renderPlayerList();
+}
+
+// IMAGE UPLOAD (Host)
+dom.imageUpload.addEventListener('change', (e) => {
+    const files = e.target.files;
+    for (let i = 0; i < files.length; i++) {
+        if (files[i] && files[i].type.startsWith('image/')) {
+            compressImage(files[i], (dataUrl) => {
+                const id = Date.now() + Math.random();
+                compressedImages.push({ id, dataUrl });
+                renderImagePreview();
+            });
+        }
+    }
+});
+
+function compressImage(file, callback) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = img.width; let height = img.height; const max = 400;
+            if (width > height) {
+                if (width > max) { height *= max / width; width = max; }
+            } else {
+                if (height > max) { width *= max / height; height = max; }
+            }
+            canvas.width = width; canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            callback(canvas.toDataURL('image/jpeg', 0.6));
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+function renderImagePreview() {
+    dom.imagePreview.innerHTML = '';
+    compressedImages.forEach(imgObj => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'image-wrapper';
+        wrapper.innerHTML = `
+            <img src="${imgObj.dataUrl}">
+            <button class="delete-btn" onclick="deleteImage(${imgObj.id})">×</button>
+        `;
+        dom.imagePreview.appendChild(wrapper);
+    });
+}
+
+window.deleteImage = function (id) {
+    compressedImages = compressedImages.filter(i => i.id !== id);
+    renderImagePreview();
+};
+
+function shuffle(array) {
+    let arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+// HOST START GAME
+dom.startGameBtn.onclick = () => {
+    // Burada length kontrolünü kaldırdık veya min sayıya çektik çünkü zaten default fotolar var 
+    if (compressedImages.length === 0) {
+        alert("Oyunu başlatmak için en az birkaç fotoğraf yüklemelisin!");
+        return;
+    }
+    if (dom.hostNickname && dom.hostNickname.value.trim()) {
+        myName = dom.hostNickname.value.trim();
+    }
+    sentences = shuffle([...originalSentences]);
+    currentSentenceIndex = 0;
+
+    // Initialize hands
+    connections.forEach(c => {
+        playersHand[c.peer] = [];
+        const uniqueUrls = [...new Set(compressedImages.map(img => img.dataUrl))];
+        playerDecks[c.peer] = shuffle(uniqueUrls);
+    });
+    playersHand['HOST'] = [];
+    const uniqueHostUrls = [...new Set(compressedImages.map(img => img.dataUrl))];
+    playerDecks['HOST'] = shuffle(uniqueHostUrls);
+
+    showScreen(dom.gameScreen);
+    dom.hostActions.classList.remove('hidden');
+    dom.playerActions.classList.remove('hidden');
+
+    startRound();
+};
+
+function startRound() {
+    const situation = sentences[currentSentenceIndex % sentences.length];
+    dom.currentSituation.innerText = situation;
+    dom.chatMessages.innerHTML = '';
+
+    dom.playerHand.classList.remove('hidden');
+    dom.playedState.classList.add('hidden');
+
+    // Refill hands & broadcast
+    connections.forEach(c => {
+        refillHand(c.peer);
+        c.conn.send({
+            type: 'round_start',
+            situation: situation,
+            hand: playersHand[c.peer]
+        });
+    });
+
+    refillHand('HOST');
+    renderHostHand(playersHand['HOST']);
+}
+
+function renderHostHand(handUrls) {
+    dom.playerHand.innerHTML = '';
+    handUrls.forEach(url => {
+        const card = document.createElement('div');
+        card.className = 'card-option';
+        card.innerHTML = `<img src="${url}">`;
+
+        card.onclick = () => {
+            const index = playersHand['HOST'].indexOf(url);
+            if (index > -1) playersHand['HOST'].splice(index, 1);
+
+            dom.playerHand.classList.add('hidden');
+            dom.playedState.classList.remove('hidden');
+
+            const bubbleData = {
+                type: 'chat_msg',
+                playerName: myName,
+                imgUrl: url,
+                peerId: 'HOST'
+            };
+            renderBubble(bubbleData);
+            broadcast(bubbleData);
+        };
+        dom.playerHand.appendChild(card);
+    });
+}
+
+function refillHand(peerId) {
+    if (!playerDecks[peerId] || playerDecks[peerId].length < CARDS_PER_PLAYER) {
+        // Create or reshuffle a deck for the player if they run out of unique cards
+        let uniqueUrls = [...new Set(compressedImages.map(img => img.dataUrl))];
+        if (uniqueUrls.length > 0) {
+            playerDecks[peerId] = shuffle(uniqueUrls);
+        } else {
+            playerDecks[peerId] = [];
+        }
+    }
+
+    let hand = [];
+    while (hand.length < CARDS_PER_PLAYER && playerDecks[peerId] && playerDecks[peerId].length > 0) {
+        let card = playerDecks[peerId].pop();
+        if (!hand.includes(card)) {
+            hand.push(card);
+        }
+    }
+    playersHand[peerId] = hand;
+}
+
+dom.nextRoundBtn.onclick = () => {
+    currentSentenceIndex++;
+    startRound();
+};
+
+dom.endGameBtn.onclick = () => {
+    if (confirm("Oyunu bitirmek, herkesi odadan çıkarmak ve yeniden başlatmak istediğinizden emin misiniz?")) {
+        broadcast({ type: 'game_ended' });
+        setTimeout(() => {
+            window.location.reload();
+        }, 500);
+    }
+};
+
+// --- PLAYER LOGIC ---
+dom.btnJoinRoom.onclick = () => {
+    const nick = dom.joinNickname.value.trim();
+    const roomId = dom.joinRoomId.value.trim().toUpperCase();
+    if (!nick || !roomId) { alert("Nick ve Oda Kodunu boş bırakma!"); return; }
+
+    dom.btnJoinRoom.innerText = "Bağlanıyor...";
+    dom.btnJoinRoom.disabled = true;
+
+    myName = nick;
+    // Client PEER
+    peer = new Peer();
+
+    peer.on('open', (id) => {
+        hostConn = peer.connect(roomId);
+
+        hostConn.on('open', () => {
+            hostConn.send({ type: 'join', name: nick });
+            showScreen(dom.waitingScreen);
+            dom.btnJoinRoom.innerText = "Odama Bağlan 🚀";
+            dom.btnJoinRoom.disabled = false;
+        });
+
+        hostConn.on('data', (data) => handlePlayerData(data));
+
+        hostConn.on('error', () => {
+            alert("Kurucuya bağlanılamadı :( Kodu kontrol et.");
+            dom.btnJoinRoom.disabled = false;
+        });
+    });
+
+    peer.on('error', (err) => {
+        alert("Bağlantı hatası: " + err.type);
+        dom.btnJoinRoom.disabled = false;
+        dom.btnJoinRoom.innerText = "Odama Bağlan 🚀";
+    });
+};
+
+function handlePlayerData(data) {
+    if (data.type === 'round_start') {
+        showScreen(dom.gameScreen);
+        dom.playerActions.classList.remove('hidden');
+        dom.hostActions.classList.add('hidden');
+
+        dom.playerHand.classList.remove('hidden');
+        dom.playedState.classList.add('hidden');
+
+        dom.currentSituation.innerText = data.situation;
+        dom.chatMessages.innerHTML = '';
+
+        renderPlayerHand(data.hand);
+
+    } else if (data.type === 'chat_msg') {
+        renderBubble(data);
+    } else if (data.type === 'game_ended') {
+        alert("Kurucu oyunu bitirdi! Ana menüye dönülüyor.");
+        window.location.reload();
+    }
+}
+
+function renderPlayerHand(handUrls) {
+    dom.playerHand.innerHTML = '';
+    handUrls.forEach(url => {
+        const card = document.createElement('div');
+        card.className = 'card-option';
+        card.innerHTML = `<img src="${url}">`;
+
+        card.onclick = () => {
+            // Play card
+            hostConn.send({ type: 'play_card', cardUrl: url });
+            dom.playerHand.classList.add('hidden');
+            dom.playedState.classList.remove('hidden');
+        };
+        dom.playerHand.appendChild(card);
+    });
+}
+
+// --- SHARED UI LOGIC ---
+function renderBubble(data) {
+    const isMine = (isHost && data.peerId === 'HOST') || (!isHost && data.playerName === myName);
+
+    const bubble = document.createElement('div');
+    bubble.className = "chat-bubble" + (isMine ? " mine" : "");
+
+    const colors = ['#e63946', '#ffb703', '#4cc9f0', '#f72585', '#06d6a0'];
+    // hash name to color
+    let hash = 0;
+    for (let i = 0; i < data.playerName.length; i++) hash += data.playerName.charCodeAt(i);
+    const pColor = colors[hash % colors.length];
+
+    bubble.innerHTML = `
+        <div class="chat-sender" style="color: ${pColor};">${data.playerName}</div>
+        <div class="chat-content">
+            <img src="${data.imgUrl}" alt="Meme Played" />
+        </div>
+    `;
+
+    dom.chatMessages.appendChild(bubble);
+    dom.chatMessages.parentElement.scrollTop = dom.chatMessages.parentElement.scrollHeight;
+}
+</script>
+</body>
+
+</html>
